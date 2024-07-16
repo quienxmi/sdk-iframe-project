@@ -2,6 +2,8 @@
 
 Este SDK simplifica el control de un iframe para solicitar presupuestos a través de Qxm incrustado en sitios web y aplicaciones de terceros. Para implementar este módulo, necesitas las credenciales proporcionadas por Qxm y la implementación en el backend para generar el token necesario para solicitar un presupuesto.
 
+<br/>
+
 ## Instalación
 
 Instala el SDK utilizando `npm`:
@@ -18,6 +20,8 @@ Una vez que esté en una carpeta pública de tu proyecto, puedes incluirlo de la
 ```html
 <script src="/js/qxm-iframe-project.umd.js"></script>
 ```
+
+<br/>
 
 ## Inicialización básica
 
@@ -42,6 +46,8 @@ api.getTokenProject((token) => {
   });
 });
 ```
+
+<br/>
 
 ## Configuraciones
 
