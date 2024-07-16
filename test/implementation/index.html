@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Test SDK Iframe Project | Qxm</title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;500;700&display=swap">
+    <link rel="stylesheet" href="./style.css">
+</head>
+
+<body>
+    <div style="width:55%;text-align:center;">
+        <form id="formInput" style="max-width:380px;margin:auto;text-align:center;">
+            <img src="./logo.svg" alt="Logo Qxm" height="60">
+            <small class="legend">To use this module, you need to have a backend implementation and the appropriate
+                access credentials.</small>
+            <textarea id="input" type="text" placeholder="Enter the generated token" minlength="100" required></textarea>
+            <button id="submitButton" type="submit">Cargar modulo</button>
+        </form>
+    </div>
+    <div class="content-iframe">
+        <iframe id="iframeTestModule" height="500" width="100%" style="margin:20px"></iframe>
+    </div>
+</body>
+
+<!-- <script src="/dist/qxm-iframe-project.umd.js"></script> -->
+<!-- <script type="module" src="/dist/qxm-iframe-project.es.js"></script> -->
+<script type="module" src="../../../src/index.ts"></script>
+
+<script>
+    let iframeProject = null;
+
+    async function loadModule() {
+        iframeProject = new QxmIframeProject('#iframeTestModule', {
+            scrolling: false,
+            resize: true,
+            alert: false,
+            logs: true
+        });
+
+        iframeProject.error((res) => {
+            console.log('error:', res);
+            alert(res.message);
+        });
+
+        iframeProject.modals((res) => {
+            console.log('Modal message:', res);
+        });
+    }
+
+    const form = document.getElementById('formInput');
+    const input = document.getElementById('input');
+
+    form.addEventListener('submit', async (event) => {
+        event.preventDefault();
+        const token = input.value.trim();
+        if (!iframeProject) {
+            loadModule(token);
+        }
+        iframeProject.setToken(token).then((user) => {
+            console.log('Token decode:', user);
+        })
+    });
+
+    input.addEventListener('input', () => {
+        submitButton.disabled = !form.checkValidity();
+    });
+</script>
+
+</html>

@@ -1,0 +1,35 @@
+{
+  "name": "sdk-iframe-project",
+  "version": "1.0.1",
+  "description": "Modulo para pedir presupuesto desde cualquier web",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc && jest && vite build",
+    "preview": "vite preview",
+    "test": "jest"
+  },
+  "devDependencies": {
+    "@types/jest": "29.5.12",
+    "jest": "29.7.0",
+    "ts-jest": "29.2.2",
+    "ts-node": "10.9.2",
+    "typescript": "^5.5.3",
+    "vite": "5.3.3"
+  },
+  "keywords": [
+    "qxm",
+    "quienxmi",
+    "project",
+    "pedidos",
+    "iframe",
+    "module",
+    "sdk"
+  ],
+  "bugs": {
+    "url": "https://www.qxm.com.ar/contactanos"
+  },
+  "homepage": "https://github.com/santizuche/qxm-iframe-project#readme",
+  "author": "Santiago Zucchetti",
+  "license": "MIT"
+}
