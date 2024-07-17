@@ -9,6 +9,19 @@
     "preview": "vite preview",
     "test": "jest"
   },
+  "homepage": "https://github.com/santizuche/qxm-iframe-project#readme",
+  "author": "Santiago Zucchetti",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/quienxmi/sdk-iframe-project.git"
+  },
+  "main": "./dist/qxm-iframe-project.umd.js",
+  "module": "./dist/qxm-iframe-project.es.js",
+  "directories": {
+    "test": "test"
+  },
+  "dependencies": {},
   "devDependencies": {
     "@types/jest": "29.5.12",
     "jest": "29.7.0",
@@ -28,12 +41,5 @@
   ],
   "bugs": {
     "url": "https://www.qxm.com.ar/contactanos"
-  },
-  "homepage": "https://github.com/santizuche/qxm-iframe-project#readme",
-  "author": "Santiago Zucchetti",
-  "license": "MIT",
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/quienxmi/sdk-iframe-project.git"
   }
 }
