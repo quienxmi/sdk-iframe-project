@@ -1,6 +1,6 @@
 {
   "name": "@quienxmi/sdk-iframe-project",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "Modulo para pedir presupuesto desde cualquier web",
   "type": "module",
   "scripts": {
