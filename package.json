@@ -31,5 +31,9 @@
   },
   "homepage": "https://github.com/santizuche/qxm-iframe-project#readme",
   "author": "Santiago Zucchetti",
-  "license": "MIT"
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/quienxmi/sdk-iframe-project.git"
+  }
 }
