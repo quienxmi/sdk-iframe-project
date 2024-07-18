@@ -43,7 +43,7 @@ function p(s) {
     return null;
   }
 }
-const b = "1.0.4", m = {
+const b = "1.0.5", m = {
   all: [],
   resize: [],
   modals: [],

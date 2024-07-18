@@ -56,7 +56,7 @@
         event.preventDefault();
         const token = input.value.trim();
         if (!iframeProject) {
-            loadModule(token);
+            loadModule();
         }
         iframeProject.setToken(token).then((user) => {
             console.log('Token decode:', user);

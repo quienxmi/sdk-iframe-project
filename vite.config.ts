@@ -22,6 +22,10 @@ export default defineConfig({
         }
     },
     plugins: [dts({
-        outDir: './dist/types'
+        outDir: './dist/types',
+        insertTypesEntry: true,
+        exclude: [
+            'src/loadSync.ts'
+        ],
     })]
 });
