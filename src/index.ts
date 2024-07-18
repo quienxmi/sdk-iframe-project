@@ -1,5 +1,5 @@
-import { Config, SubscriptionTypes, Observer, TokenDecode, EventObserver } from '@interfaces';
 import './interfaces/global.d';
+import { Config, SubscriptionTypes, Observer, TokenDecode, EventObserver } from '@interfaces';
 import Errors from './constants/errors';
 import { checkDomain } from './utils/checkDomain';
 import { decodeToken } from './utils/decodeToken';
@@ -19,9 +19,9 @@ class QxmIframeProject {
     private _checkExp?: number | NodeJS.Timeout;
     private _logs = false;
 
-    constructor(domOrStringIframe: HTMLIFrameElement | string, config: Config) {
+    constructor(domOrStringIframe: HTMLIFrameElement | string, config: Config | null) {
         try {
-            const { scrolling, resize, logs } = config;
+            const { scrolling, resize, logs } = config ?? {};
 
             if (typeof domOrStringIframe === 'string') {
                 this._domIframe = document.querySelector(domOrStringIframe)!;

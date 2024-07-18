@@ -43,7 +43,7 @@ function p(s) {
     return null;
   }
 }
-const b = "1.0.3", m = {
+const b = "1.0.4", m = {
   all: [],
   resize: [],
   modals: [],
@@ -56,7 +56,7 @@ class g {
     i(this, "_checkExp");
     i(this, "_logs", !1);
     try {
-      const { scrolling: t, resize: o, logs: n } = r;
+      const { scrolling: t, resize: o, logs: n } = r ?? {};
       if (typeof e == "string" ? this._domIframe = document.querySelector(e) : this._domIframe = e, n === !0 && (this._logs = !0), this._logs && console.info("[QxmIframe]: Version " + b), !this._domIframe) {
         this.errorLog("IFRAME_NOT_FOUND");
         return;
