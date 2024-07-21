@@ -1,5 +1,4 @@
 export default [
-    'localhost',
     '.sandboxqxm.com',
     '.quienpormi.com',
     '.quienxmi.com',

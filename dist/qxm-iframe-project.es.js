@@ -1,15 +1,24 @@
-var h = Object.defineProperty;
-var d = (s, e, r) => e in s ? h(s, e, { enumerable: !0, configurable: !0, writable: !0, value: r }) : s[e] = r;
-var i = (s, e, r) => d(s, typeof e != "symbol" ? e + "" : e, r);
+var d = Object.defineProperty;
+var m = (s, e, r) => e in s ? d(s, e, { enumerable: !0, configurable: !0, writable: !0, value: r }) : s[e] = r;
+var i = (s, e, r) => m(s, typeof e != "symbol" ? e + "" : e, r);
 const f = {
   SDK_CREATE: "The SDK could not be found.",
-  IFRAME_NOT_FOUND: "The iframe could not be found.",
-  DOM_NOT_IFRAME: "You cannot build the iframe because the DOM is not an iframe.",
-  INVALID_TOKEN: "The token is expired or has an error. It is necessary to generate the token again.",
-  INVALID_DOMAIN: "The source domain is not supported.",
-  ERROR_LOADING_IFRAME: "The iframe could not be loaded correctly."
-}, u = [
-  "localhost",
+  IFRAME_NOT_FOUND: "The specified iframe could not be found.",
+  EXPIRED_TOKEN: "Your token has expired. Please generate a new one.",
+  DOM_NOT_IFRAME: "Cannot build the iframe as the DOM element is not an iframe.",
+  INVALID_TOKEN: "The token is invalid or has expired. Please generate a new token.",
+  INVALID_ORIGIN: "The origin of the source is not supported.",
+  INVALID_DOMAIN: "The domain of the source is not supported.",
+  ERROR_LOADING_IFRAME: "Failed to load the iframe correctly."
+};
+function u(s) {
+  try {
+    return new URL(s).origin === window.location.origin;
+  } catch {
+    return !1;
+  }
+}
+const I = [
   ".sandboxqxm.com",
   ".quienpormi.com",
   ".quienxmi.com",
@@ -17,8 +26,13 @@ const f = {
 ];
 function l(s) {
   try {
-    const e = new URL(s), r = e.hostname;
-    return u.some((t) => t === "localhost" ? r === "localhost" : e.protocol !== "https:" ? !1 : t.endsWith(".") ? r.slice(0, -2).endsWith(t) : r.endsWith(t));
+    const e = new URL(s);
+    if (e.hostname === "localhost")
+      return e.port === "8000";
+    if (e.protocol !== "https:")
+      return !1;
+    const r = e.hostname;
+    return I.some((t) => t.endsWith(".") ? r.slice(0, -2).endsWith(t) : r.endsWith(t));
   } catch {
     return !1;
   }
@@ -29,35 +43,35 @@ const _ = [
   "exp",
   "data"
 ];
-function I(s) {
+function p(s) {
   const e = Object.keys(s);
   return _.every((r) => e.includes(r));
 }
-function p(s) {
+function g(s) {
   try {
     const r = s.split(".")[1].replace(/-/g, "+").replace(/_/g, "/"), t = JSON.parse(decodeURIComponent(atob(r).split("").map(function(n) {
       return "%" + ("00" + n.charCodeAt(0).toString(16)).slice(-2);
     }).join(""))), o = Math.floor(Date.now() / 1e3);
-    return t.exp > o && I(t) ? t : null;
+    return t.exp > o && p(t) ? t : null;
   } catch {
     return null;
   }
 }
-const b = "1.0.5", m = {
+const E = "1.0.6", h = {
   all: [],
   resize: [],
   modals: [],
   error: []
 };
-class g {
+class b {
   constructor(e, r) {
     i(this, "_domIframe");
-    i(this, "_observers", m);
+    i(this, "_observers", h);
     i(this, "_checkExp");
     i(this, "_logs", !1);
     try {
       const { scrolling: t, resize: o, logs: n } = r ?? {};
-      if (typeof e == "string" ? this._domIframe = document.querySelector(e) : this._domIframe = e, n === !0 && (this._logs = !0), this._logs && console.info("[QxmIframe]: Version " + b), !this._domIframe) {
+      if (typeof e == "string" ? this._domIframe = document.querySelector(e) : this._domIframe = e, n === !0 && (this._logs = !0), this._logs && console.info("[QxmIframe]: Version " + E), !this._domIframe) {
         this.errorLog("IFRAME_NOT_FOUND");
         return;
       }
@@ -80,14 +94,14 @@ class g {
     this.subscribe("modals", e);
   }
   async setToken(e) {
-    const r = p(e);
-    return r ? l(r.iss) ? (this._checkExp = setInterval(() => {
+    const r = g(e);
+    return clearInterval(this._checkExp), r ? r.aud && !u(r.aud) ? (this.errorLog("INVALID_ORIGIN"), null) : l(r.iss) ? (this._checkExp = setInterval(() => {
       const t = Math.floor(Date.now() / 1e3);
-      r.exp < t && (this.errorLog("EXPIRED_TOKEN"), clearInterval(this._checkExp));
+      r.exp < t && (clearInterval(this._checkExp), this.errorLog("EXPIRED_TOKEN"));
     }, 1e3), await this.setSrcIframe(r.iss, e) ? r : null) : (this.errorLog("INVALID_DOMAIN"), null) : (this.errorLog("INVALID_TOKEN"), null);
   }
   destroy() {
-    this._domIframe = void 0, this._observers = m;
+    this._domIframe = void 0, this._observers = h, clearInterval(this._checkExp);
   }
   setSrcIframe(e, r) {
     return new Promise((t) => {
@@ -113,6 +127,7 @@ class g {
         let o = t.type ?? "all";
         this._observers[o] || (o = "all"), this._observers[o].forEach((n) => n({
           _domIframe: this._domIframe,
+          _observers: this._observers,
           data: t
         }));
       }
@@ -122,6 +137,7 @@ class g {
     const t = f[e] ?? e;
     this._logs && console.error("[QxmIframe]:", t, r), this._observers.error.forEach((o) => o({
       _domIframe: this._domIframe,
+      _observers: this._observers,
       code: e,
       message: t,
       error: r
@@ -132,8 +148,8 @@ class g {
     r.style.setProperty("height", `${t.height + n}px`, "important");
   }
 }
-window.QxmIframeProject = g;
+typeof window < "u" && (window.QxmIframeProject = b);
 export {
-  g as default
+  b as default
 };
 //# sourceMappingURL=qxm-iframe-project.es.js.map

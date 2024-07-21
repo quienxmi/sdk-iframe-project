@@ -1,3 +1,3 @@
-import { TokenDecode } from '../interfaces/index.ts';
+import { DecodedToken } from '../interfaces/index.ts';
 
-export declare function decodeToken(token: string): TokenDecode | null;
+export declare function decodeToken(token: string): DecodedToken | null;

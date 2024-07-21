@@ -1,11 +1,12 @@
 import './interfaces/global.d';
-import { Config, SubscriptionTypes, Observer, TokenDecode, EventObserver } from '@interfaces';
 import Errors from './constants/errors';
+import { Config, SubscriptionTypes, Observer, DecodedToken, EventObserver, EventObserverError } from '@interfaces';
+import { checkOrigin } from './utils/checkOrigin';
 import { checkDomain } from './utils/checkDomain';
 import { decodeToken } from './utils/decodeToken';
 import { version } from '../package.json';
 
-const observersStructure = {
+const observersStructure: Observer = {
     all: [],
     resize: [],
     modals: [],
@@ -15,11 +16,14 @@ const observersStructure = {
 class QxmIframeProject {
     public _domIframe?: HTMLIFrameElement;
     public _observers: Observer = observersStructure;
-    
+
     private _checkExp?: number | NodeJS.Timeout;
     private _logs = false;
 
-    constructor(domOrStringIframe: HTMLIFrameElement | string, config: Config | null) {
+    constructor(
+        domOrStringIframe: HTMLIFrameElement | string,
+        config: Config | null
+    ) {
         try {
             const { scrolling, resize, logs } = config ?? {};
 
@@ -75,37 +79,44 @@ class QxmIframeProject {
         this.subscribe('modals', callback);
     }
 
-    async setToken(token: string): Promise<TokenDecode | null> {
-        const tokenDecode: TokenDecode | null = decodeToken(token);
+    async setToken(token: string): Promise<DecodedToken | null> {
+        const decodedToken: DecodedToken | null = decodeToken(token);
+        clearInterval(this._checkExp);
 
-        if (!tokenDecode) {
+        if (!decodedToken) {
             this.errorLog('INVALID_TOKEN');
             return null;
         }
 
-        if (!checkDomain(tokenDecode.iss)) {
+        if (decodedToken.aud && !checkOrigin(decodedToken.aud)) {
+            this.errorLog('INVALID_ORIGIN');
+            return null;
+        }
+
+        if (!checkDomain(decodedToken.iss)) {
             this.errorLog('INVALID_DOMAIN');
             return null;
         }
 
         this._checkExp = setInterval(() => {
             const now = Math.floor(Date.now() / 1000);
-            if (tokenDecode.exp < now) {
-                this.errorLog('EXPIRED_TOKEN');
+            if (decodedToken.exp < now) {
                 clearInterval(this._checkExp);
+                this.errorLog('EXPIRED_TOKEN');
             }
         }, 1000);
 
-        if (!await this.setSrcIframe(tokenDecode.iss, token)) {
+        if (!await this.setSrcIframe(decodedToken.iss, token)) {
             return null;
         }
 
-        return tokenDecode;
+        return decodedToken;
     }
 
     destroy() {
         this._domIframe = undefined;
         this._observers = observersStructure;
+        clearInterval(this._checkExp);
     }
 
     private setSrcIframe(domain: string, token: string): Promise<boolean> {
@@ -151,8 +162,9 @@ class QxmIframeProject {
                 }
                 this._observers[type].forEach((observer: Function) => observer({
                     _domIframe: this._domIframe,
+                    _observers: this._observers,
                     data
-                }));
+                } as EventObserver));
             }
         });
     }
@@ -164,10 +176,11 @@ class QxmIframeProject {
         }
         this._observers.error.forEach((observer: Function) => observer({
             _domIframe: this._domIframe,
+            _observers: this._observers,
             code,
             message,
             error
-        }));
+        } as EventObserverError));
     }
 
     private resize(event: EventObserver) {
@@ -178,5 +191,8 @@ class QxmIframeProject {
     }
 }
 
+if (typeof window !== 'undefined') {
+    window.QxmIframeProject = QxmIframeProject;
+}
+
 export default QxmIframeProject;
-window.QxmIframeProject = QxmIframeProject;

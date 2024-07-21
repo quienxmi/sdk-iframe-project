@@ -1,4 +1,4 @@
-import { TokenDecode } from '@interfaces';
+import { DecodedToken } from '@interfaces';
 
 const requiredKeys = [
     'iss',
@@ -7,7 +7,7 @@ const requiredKeys = [
     'data'
 ];
 
-function checkKeysInObject(jsonPayload: TokenDecode): boolean {
+function checkKeysInObject(jsonPayload: DecodedToken): boolean {
     const payloadKeys = Object.keys(jsonPayload);
     return requiredKeys.every(key => payloadKeys.includes(key));
 }
@@ -16,7 +16,7 @@ export function decodeToken(token: string) {
     try {
         const base64Url = token.split('.')[1];
         const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
-        const jsonPayload: TokenDecode = JSON.parse(decodeURIComponent(atob(base64).split('').map(function (c) {
+        const jsonPayload: DecodedToken = JSON.parse(decodeURIComponent(atob(base64).split('').map(function (c) {
             return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
         }).join('')));
         const currentTime = Math.floor(Date.now() / 1000);

@@ -1,6 +1,6 @@
 {
   "name": "@quienxmi/sdk-iframe-project",
-  "version": "1.0.5",
+  "version": "1.0.6",
   "type": "module",
   "main": "./dist/qxm-iframe-project.umd.js",
   "module": "./dist/qxm-iframe-project.es.js",

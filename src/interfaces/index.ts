@@ -15,7 +15,22 @@ export interface Observer {
     [key: string]: Function[];
 }
 
-export interface TokenDecode {
+export interface EventObserver {
+    _domIframe: HTMLIFrameElement;
+    _observers: Observer;
+    data: any;
+}
+
+export interface EventObserverError {
+    _domIframe: HTMLIFrameElement;
+    _observers: Observer;
+    code: string;
+    message: string;
+    error: any;
+}
+
+export interface DecodedToken {
+    aud?: string | null;
     iss: string;
     iat: number;
     exp: number;
@@ -24,10 +39,4 @@ export interface TokenDecode {
         user: string;
         partner: string;
     }
-}
-
-export interface EventObserver {
-    _domIframe: HTMLIFrameElement;
-    _observers: Observer;
-    data: any;
 }

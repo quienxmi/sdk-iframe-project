@@ -1,4 +1,4 @@
-import { Config, SubscriptionTypes, Observer, TokenDecode } from './interfaces/index.ts';
+import { Config, SubscriptionTypes, Observer, DecodedToken } from './interfaces/index.ts';
 
 declare class QxmIframeProject {
     _domIframe?: HTMLIFrameElement;
@@ -9,7 +9,7 @@ declare class QxmIframeProject {
     subscribe(type: SubscriptionTypes | undefined, callback: Function): void;
     error(callback: Function): void;
     modals(callback: Function): void;
-    setToken(token: string): Promise<TokenDecode | null>;
+    setToken(token: string): Promise<DecodedToken | null>;
     destroy(): void;
     private setSrcIframe;
     private createListener;
