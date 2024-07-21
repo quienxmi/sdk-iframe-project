@@ -5,6 +5,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Test SDK Iframe Project | Qxm</title>
+    <link rel="shortcut icon" type="image/x-icon" href="favicon.ico">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;500;700&display=swap">
     <link rel="stylesheet" href="./style.css">
 </head>
@@ -58,8 +59,8 @@
         if (!iframeProject) {
             loadModule();
         }
-        iframeProject.setToken(token).then((user) => {
-            console.log('Token decode:', user);
+        iframeProject.setToken(token).then((decodedToken) => {
+            console.log('Decoded token:', decodedToken);
         })
     });
 

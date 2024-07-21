@@ -36,14 +36,13 @@ body {
 textarea {
     max-width: 100%;
     min-width: 100%;
-    min-height: 230px;
+    min-height: 260px;
     border-radius: 8px;
     background: #fff;
     padding: 14px;
     font-size: 1em;
     border: 2px solid #DD3083;
     transition: .25s;
-
     box-shadow: 0 5px 6px #DD308314;
 }
 
