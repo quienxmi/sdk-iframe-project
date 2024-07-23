@@ -1,6 +1,6 @@
 import './interfaces/global.d';
 import Errors from './constants/errors';
-import { Config, SubscriptionTypes, Observer, DecodedToken, EventObserver, EventObserverError } from '@interfaces';
+import { Config, SubscriptionTypes, Observer, DecodedToken, EventObserver, EventObserverError } from './interfaces/index';
 import { checkOrigin } from './utils/checkOrigin';
 import { checkDomain } from './utils/checkDomain';
 import { decodeToken } from './utils/decodeToken';
@@ -9,7 +9,7 @@ import { version } from '../package.json';
 const observersStructure: Observer = {
     all: [],
     resize: [],
-    modals: [],
+    event: [],
     error: []
 };
 
@@ -42,12 +42,12 @@ class QxmIframeProject {
             }
 
             if (!this._domIframe) {
-                this.errorLog('IFRAME_NOT_FOUND');
+                this.pushError('IFRAME_NOT_FOUND');
                 return;
             }
 
             if (!(this._domIframe instanceof HTMLIFrameElement)) {
-                this.errorLog('DOM_NOT_IFRAME');
+                this.pushError('DOM_NOT_IFRAME');
                 return;
             }
 
@@ -63,7 +63,8 @@ class QxmIframeProject {
                 this.subscribe('resize', this.resize);
             }
         } catch (e: any) {
-            this.errorLog('SDK_CREATE', e);
+            this.pushError('SDK_CREATE', null, e);
+            this.destroy();
         }
     }
 
@@ -71,30 +72,31 @@ class QxmIframeProject {
         this._observers[type].push(callback);
     }
 
-    error(callback: Function) {
+    subscribeError(callback: Function) {
         this.subscribe('error', callback);
     }
 
-    modals(callback: Function) {
-        this.subscribe('modals', callback);
+    subscribeEvent(callback: Function) {
+        this.subscribe('event', callback);
     }
 
     async setToken(token: string): Promise<DecodedToken | null> {
+        token = token.trim();
         const decodedToken: DecodedToken | null = decodeToken(token);
         clearInterval(this._checkExp);
 
         if (!decodedToken) {
-            this.errorLog('INVALID_TOKEN');
+            this.pushError('INVALID_TOKEN');
             return null;
         }
 
         if (decodedToken.aud && !checkOrigin(decodedToken.aud)) {
-            this.errorLog('INVALID_ORIGIN');
+            this.pushError('INVALID_ORIGIN');
             return null;
         }
 
         if (!checkDomain(decodedToken.iss)) {
-            this.errorLog('INVALID_DOMAIN');
+            this.pushError('INVALID_DOMAIN');
             return null;
         }
 
@@ -102,7 +104,7 @@ class QxmIframeProject {
             const now = Math.floor(Date.now() / 1000);
             if (decodedToken.exp < now) {
                 clearInterval(this._checkExp);
-                this.errorLog('EXPIRED_TOKEN');
+                this.pushError('EXPIRED_TOKEN');
             }
         }, 1000);
 
@@ -129,7 +131,7 @@ class QxmIframeProject {
             };
 
             const onError = () => {
-                this.errorLog('ERROR_LOADING_IFRAME');
+                this.pushError('ERROR_LOADING_IFRAME');
                 clearEvents();
                 resolve(false);
             };
@@ -160,23 +162,27 @@ class QxmIframeProject {
                 if (!this._observers[type]) {
                     type = 'all';
                 }
+                if (type === 'error') {
+                    this.pushError(data.code, data.message);
+                    return;
+                }
                 this._observers[type].forEach((observer: Function) => observer({
                     _domIframe: this._domIframe,
-                    _observers: this._observers,
                     data
                 } as EventObserver));
             }
         });
     }
 
-    private errorLog(code: string, error: any = null) {
-        const message = Errors[code] ?? code;
+    private pushError(code: string, message: string | null = null, error: any = null) {
+        if (!message) {
+            message = Errors[code] ?? code;
+        } 
         if (this._logs) {
             console.error('[QxmIframe]:', message, error);
         }
         this._observers.error.forEach((observer: Function) => observer({
             _domIframe: this._domIframe,
-            _observers: this._observers,
             code,
             message,
             error

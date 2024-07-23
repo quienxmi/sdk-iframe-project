@@ -1,4 +1,4 @@
-import { Errors } from '@interfaces';
+import { Errors } from '../interfaces/index';
 
 const errors: Errors = {
     SDK_CREATE: 'The SDK could not be found.',

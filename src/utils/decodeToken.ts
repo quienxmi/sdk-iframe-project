@@ -1,4 +1,4 @@
-import { DecodedToken } from '@interfaces';
+import { DecodedToken } from '../interfaces/index';
 
 const requiredKeys = [
     'iss',

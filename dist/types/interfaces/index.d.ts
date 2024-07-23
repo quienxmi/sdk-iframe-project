@@ -7,18 +7,16 @@ export interface Config {
     alert?: boolean;
     logs?: boolean;
 }
-export type SubscriptionTypes = 'all' | 'resize' | 'modals' | 'error';
+export type SubscriptionTypes = 'all' | 'resize' | 'event' | 'error';
 export interface Observer {
     [key: string]: Function[];
 }
 export interface EventObserver {
     _domIframe: HTMLIFrameElement;
-    _observers: Observer;
     data: any;
 }
 export interface EventObserverError {
     _domIframe: HTMLIFrameElement;
-    _observers: Observer;
     code: string;
     message: string;
     error: any;

@@ -17,7 +17,7 @@
             <small class="legend">To use this module, you need to have a backend implementation and the appropriate
                 access credentials.</small>
             <textarea id="input" type="text" placeholder="Enter the generated token" minlength="100" required></textarea>
-            <button id="submitButton" type="submit">Cargar modulo</button>
+            <button id="submitButton" type="submit">Load form</button>
         </form>
     </div>
     <div class="content-iframe">
@@ -36,17 +36,19 @@
         iframeProject = new QxmIframeProject('#iframeTestModule', {
             scrolling: false,
             resize: true,
-            alert: false,
             logs: true
         });
 
-        iframeProject.error((res) => {
-            console.log('error:', res);
-            alert(res.message);
+        iframeProject.subscribeError((error) => {
+            console.log('Iframe error:', error);
+            alert(error.message);
         });
 
-        iframeProject.modals((res) => {
-            console.log('Modal message:', res);
+        iframeProject.subscribeEvent((event) => {
+            console.log('Iframe event:', event);
+            if (event.data.event === 'PROJECT_CREATE') {
+                alert(`Your order was successfully created! Your CODE is "${event.data.code}"`);
+            }
         });
     }
 
@@ -55,13 +57,13 @@
 
     form.addEventListener('submit', async (event) => {
         event.preventDefault();
-        const token = input.value.trim();
         if (!iframeProject) {
             loadModule();
         }
-        iframeProject.setToken(token).then((decodedToken) => {
+        const inputToken = input.value;
+        iframeProject.setToken(inputToken).then((decodedToken) => {
             console.log('Decoded token:', decodedToken);
-        })
+        });
     });
 
     input.addEventListener('input', () => {

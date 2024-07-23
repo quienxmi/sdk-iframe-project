@@ -1,6 +1,6 @@
-var d = Object.defineProperty;
-var m = (s, e, r) => e in s ? d(s, e, { enumerable: !0, configurable: !0, writable: !0, value: r }) : s[e] = r;
-var i = (s, e, r) => m(s, typeof e != "symbol" ? e + "" : e, r);
+var u = Object.defineProperty;
+var d = (o, e, r) => e in o ? u(o, e, { enumerable: !0, configurable: !0, writable: !0, value: r }) : o[e] = r;
+var i = (o, e, r) => d(o, typeof e != "symbol" ? e + "" : e, r);
 const f = {
   SDK_CREATE: "The SDK could not be found.",
   IFRAME_NOT_FOUND: "The specified iframe could not be found.",
@@ -11,109 +11,110 @@ const f = {
   INVALID_DOMAIN: "The domain of the source is not supported.",
   ERROR_LOADING_IFRAME: "Failed to load the iframe correctly."
 };
-function u(s) {
+function m(o) {
   try {
-    return new URL(s).origin === window.location.origin;
+    return new URL(o).origin === window.location.origin;
   } catch {
     return !1;
   }
 }
-const I = [
+const p = [
   ".sandboxqxm.com",
   ".quienpormi.com",
   ".quienxmi.com",
   ".qxm.com."
 ];
-function l(s) {
+function l(o) {
   try {
-    const e = new URL(s);
+    const e = new URL(o);
     if (e.hostname === "localhost")
       return e.port === "8000";
     if (e.protocol !== "https:")
       return !1;
     const r = e.hostname;
-    return I.some((t) => t.endsWith(".") ? r.slice(0, -2).endsWith(t) : r.endsWith(t));
+    return p.some((t) => t.endsWith(".") ? r.slice(0, -2).endsWith(t) : r.endsWith(t));
   } catch {
     return !1;
   }
 }
-const _ = [
+const I = [
   "iss",
   "iat",
   "exp",
   "data"
 ];
-function p(s) {
-  const e = Object.keys(s);
-  return _.every((r) => e.includes(r));
+function _(o) {
+  const e = Object.keys(o);
+  return I.every((r) => e.includes(r));
 }
-function g(s) {
+function E(o) {
   try {
-    const r = s.split(".")[1].replace(/-/g, "+").replace(/_/g, "/"), t = JSON.parse(decodeURIComponent(atob(r).split("").map(function(n) {
+    const r = o.split(".")[1].replace(/-/g, "+").replace(/_/g, "/"), t = JSON.parse(decodeURIComponent(atob(r).split("").map(function(n) {
       return "%" + ("00" + n.charCodeAt(0).toString(16)).slice(-2);
-    }).join(""))), o = Math.floor(Date.now() / 1e3);
-    return t.exp > o && p(t) ? t : null;
+    }).join(""))), s = Math.floor(Date.now() / 1e3);
+    return t.exp > s && _(t) ? t : null;
   } catch {
     return null;
   }
 }
-const E = "1.0.6", h = {
+const b = "1.0.7", h = {
   all: [],
   resize: [],
-  modals: [],
+  event: [],
   error: []
 };
-class b {
+class v {
   constructor(e, r) {
     i(this, "_domIframe");
     i(this, "_observers", h);
     i(this, "_checkExp");
     i(this, "_logs", !1);
     try {
-      const { scrolling: t, resize: o, logs: n } = r ?? {};
-      if (typeof e == "string" ? this._domIframe = document.querySelector(e) : this._domIframe = e, n === !0 && (this._logs = !0), this._logs && console.info("[QxmIframe]: Version " + E), !this._domIframe) {
-        this.errorLog("IFRAME_NOT_FOUND");
+      const { scrolling: t, resize: s, logs: n } = r ?? {};
+      if (typeof e == "string" ? this._domIframe = document.querySelector(e) : this._domIframe = e, n === !0 && (this._logs = !0), this._logs && console.info("[QxmIframe]: Version " + b), !this._domIframe) {
+        this.pushError("IFRAME_NOT_FOUND");
         return;
       }
       if (!(this._domIframe instanceof HTMLIFrameElement)) {
-        this.errorLog("DOM_NOT_IFRAME");
+        this.pushError("DOM_NOT_IFRAME");
         return;
       }
-      this._domIframe.setAttribute("frameborder", "0"), t || this._domIframe.setAttribute("scrolling", "no"), this.createListener(), (o ?? !0) && this.subscribe("resize", this.resize);
+      this._domIframe.setAttribute("frameborder", "0"), t || this._domIframe.setAttribute("scrolling", "no"), this.createListener(), (s ?? !0) && this.subscribe("resize", this.resize);
     } catch (t) {
-      this.errorLog("SDK_CREATE", t);
+      this.pushError("SDK_CREATE", null, t), this.destroy();
     }
   }
   subscribe(e = "all", r) {
     this._observers[e].push(r);
   }
-  error(e) {
+  subscribeError(e) {
     this.subscribe("error", e);
   }
-  modals(e) {
-    this.subscribe("modals", e);
+  subscribeEvent(e) {
+    this.subscribe("event", e);
   }
   async setToken(e) {
-    const r = g(e);
-    return clearInterval(this._checkExp), r ? r.aud && !u(r.aud) ? (this.errorLog("INVALID_ORIGIN"), null) : l(r.iss) ? (this._checkExp = setInterval(() => {
+    e = e.trim();
+    const r = E(e);
+    return clearInterval(this._checkExp), r ? r.aud && !m(r.aud) ? (this.pushError("INVALID_ORIGIN"), null) : l(r.iss) ? (this._checkExp = setInterval(() => {
       const t = Math.floor(Date.now() / 1e3);
-      r.exp < t && (clearInterval(this._checkExp), this.errorLog("EXPIRED_TOKEN"));
-    }, 1e3), await this.setSrcIframe(r.iss, e) ? r : null) : (this.errorLog("INVALID_DOMAIN"), null) : (this.errorLog("INVALID_TOKEN"), null);
+      r.exp < t && (clearInterval(this._checkExp), this.pushError("EXPIRED_TOKEN"));
+    }, 1e3), await this.setSrcIframe(r.iss, e) ? r : null) : (this.pushError("INVALID_DOMAIN"), null) : (this.pushError("INVALID_TOKEN"), null);
   }
   destroy() {
     this._domIframe = void 0, this._observers = h, clearInterval(this._checkExp);
   }
   setSrcIframe(e, r) {
     return new Promise((t) => {
-      const o = this._domIframe, n = () => {
+      const s = this._domIframe, n = () => {
         c(), t(!0);
       }, a = () => {
-        this.errorLog("ERROR_LOADING_IFRAME"), c(), t(!1);
+        this.pushError("ERROR_LOADING_IFRAME"), c(), t(!1);
       }, c = () => {
-        o.removeEventListener("load", n), o.removeEventListener("error", a);
+        s.removeEventListener("load", n), s.removeEventListener("error", a);
       };
       try {
-        o.src = e + "/api/iframe/project/create?token=" + r, o.addEventListener("load", n), o.addEventListener("error", a);
+        s.src = e + "/api/iframe/project/create?token=" + r, s.addEventListener("load", n), s.addEventListener("error", a);
       } catch {
         a();
       }
@@ -124,32 +125,33 @@ class b {
       const { origin: r, data: t } = e;
       if (l(r)) {
         this._logs && console.log("[QxmIframe]:", t);
-        let o = t.type ?? "all";
-        this._observers[o] || (o = "all"), this._observers[o].forEach((n) => n({
+        let s = t.type ?? "all";
+        if (this._observers[s] || (s = "all"), s === "error") {
+          this.pushError(t.code, t.message);
+          return;
+        }
+        this._observers[s].forEach((n) => n({
           _domIframe: this._domIframe,
-          _observers: this._observers,
           data: t
         }));
       }
     });
   }
-  errorLog(e, r = null) {
-    const t = f[e] ?? e;
-    this._logs && console.error("[QxmIframe]:", t, r), this._observers.error.forEach((o) => o({
+  pushError(e, r = null, t = null) {
+    r || (r = f[e] ?? e), this._logs && console.error("[QxmIframe]:", r, t), this._observers.error.forEach((s) => s({
       _domIframe: this._domIframe,
-      _observers: this._observers,
       code: e,
-      message: t,
-      error: r
+      message: r,
+      error: t
     }));
   }
   resize(e) {
-    const { _domIframe: r, data: t } = e, o = window.getComputedStyle(r), n = parseInt(o.paddingTop) + parseInt(o.paddingBottom);
+    const { _domIframe: r, data: t } = e, s = window.getComputedStyle(r), n = parseInt(s.paddingTop) + parseInt(s.paddingBottom);
     r.style.setProperty("height", `${t.height + n}px`, "important");
   }
 }
-typeof window < "u" && (window.QxmIframeProject = b);
+typeof window < "u" && (window.QxmIframeProject = v);
 export {
-  b as default
+  v as default
 };
 //# sourceMappingURL=qxm-iframe-project.es.js.map

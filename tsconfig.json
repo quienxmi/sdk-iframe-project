@@ -23,12 +23,7 @@
     "outDir": "./dist",
     "declaration": true,
     "declarationDir": "./dist/types",
-    "emitDeclarationOnly": true,
-    "paths": {
-      "@interfaces": [
-        "./src/interfaces/index.ts"
-      ]
-    }
+    "emitDeclarationOnly": true
   },
   "include": [
     "src/**/*.ts"

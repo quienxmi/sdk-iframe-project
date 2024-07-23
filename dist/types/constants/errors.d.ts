@@ -1,4 +1,3 @@
-import { Errors } from '../interfaces/index.ts';
-
+import { Errors } from '../interfaces/index';
 declare const errors: Errors;
 export default errors;

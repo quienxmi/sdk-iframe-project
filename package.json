@@ -1,6 +1,6 @@
 {
   "name": "@quienxmi/sdk-iframe-project",
-  "version": "1.0.6",
+  "version": "1.0.7",
   "type": "module",
   "main": "./dist/qxm-iframe-project.umd.js",
   "module": "./dist/qxm-iframe-project.es.js",
@@ -18,9 +18,9 @@
     "jest": "29.7.0",
     "ts-jest": "29.2.3",
     "ts-node": "10.9.2",
-    "typescript": "^5.5.3",
+    "typescript": "5.5.4",
     "vite": "5.3.4",
-    "vite-plugin-dts": "^4.0.0-beta.1"
+    "vite-plugin-dts": "2.3.0"
   },
   "directories": {
     "test": "test"
