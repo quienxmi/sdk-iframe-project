@@ -1,6 +1,6 @@
 # SDK Iframe Project
 
-This SDK simplifies the control of an iframe to request quotes through [Qxm - Quienxmi](https://www.quienxmi.com) embedded in third-party websites and applications. To implement this module, you need the credentials provided by Qxm and the backend implementation to generate the necessary token to request a quote.
+This SDK simplifies the control of our embedded iframe. It is to be used in third-party websites and applications to request quotes from [Qxm - Quienxmi](https://www.quienxmi.com). To implement this module, you need both credentials provided by Qxm and a backend implementation to generate the necessary tokens to request a quote.
 
 <br/>
 
@@ -35,7 +35,7 @@ Place the `IFRAME` where the quote request will be inserted:
 <iframe id="iframeDom" height="500" width="100%"></iframe>
 ```
 
-After calling the SDK, initialize the module as shown below. Make sure the `DOM` is preloaded to get the `IFRAME` and generate the `TOKEN` by connecting to your backend.
+After calling the SDK, initialize the module as shown below. Make sure the DOM is preloaded before getting the IFRAME and then generate the `TOKEN` by connecting to your backend.
 
 ```javascript
 const iframeProject = new QxmIframeProject("#iframeDom");
@@ -65,7 +65,7 @@ const iframeProject = new QxmIframeProject("#iframeDom", {
 
 ### Event Subscriptions
 
-Subscribe to various events and errors to handle them within your application:
+You can subscribe to receive events and errors to handle them within your application:
 
 ```javascript
 // Subscribe to iframe errors
@@ -89,7 +89,7 @@ iframeProject.subscribeEvent((event) => {
 <iframe id="iframeDom" height="500" width="100%"></iframe>
 ```
 
-You can use a `class` to add more properties to your iframe, such as padding or margin. When the module performs automatic resizing, it will take padding into account to avoid scrolling.
+You can use a class to add more styles to your iframe, such as padding or margin. When the module performs automatic resizing, it will take padding into account to avoid scrolling.
 
 ### Configuration Object
 
@@ -136,4 +136,4 @@ api.getTokenProject((token) => {
 });
 ```
 
-This setup ensures you have control over iframe behavior and can handle events and errors efficiently.
+This setup ensures you have control over the iframe behavior and also makes sure you can handle events and errors efficiently.
