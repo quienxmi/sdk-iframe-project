@@ -8,8 +8,9 @@
   "types": "dist/types/index.d.ts",
   "typings": "dist/types/index.d.ts",
   "scripts": {
-    "dev": "vite",
+    "dev": "vite --config vite.config.ts",
     "build": "tsc && jest && vite build",
+    "build:demo": "tsc && jest && vite build --config vite.config.demo.ts",
     "preview": "vite preview",
     "test": "jest"
   },
@@ -20,7 +21,9 @@
     "ts-node": "10.9.2",
     "typescript": "5.5.4",
     "vite": "5.3.4",
-    "vite-plugin-dts": "2.3.0"
+    "vite-plugin-dts": "2.3.0",
+    "vite-plugin-html": "3.2.2",
+    "vite-plugin-singlefile": "2.0.2"
   },
   "directories": {
     "test": "test"

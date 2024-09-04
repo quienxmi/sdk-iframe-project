@@ -21,13 +21,19 @@
         </form>
     </div>
     <div class="content-iframe">
-        <iframe id="iframeTestModule" height="500" width="100%" style="margin:20px 0;padding:0 20px"></iframe>
+        <div class="phone">
+            <img src="./phone.svg" alt="Phone">
+            <div class="screen">
+                <div class="app-header fix">APP / WEB HEADER</div>
+                <iframe id="iframeTestModule" height="500" width="100%" style="padding:10px 8px"></iframe>
+            </div>
+        </div>
     </div>
 </body>
 
 <!-- <script src="/dist/qxm-iframe-project.umd.js"></script> -->
 <!-- <script type="module" src="/dist/qxm-iframe-project.es.js"></script> -->
-<script type="module" src="../../../src/index.ts"></script>
+<script type="module" src="../../src/index.ts"></script>
 
 <script>
     let iframeProject = null;

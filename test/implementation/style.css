@@ -86,4 +86,40 @@ button:disabled {
     border-left: 2px solid #0D4676;
     background: #0d467610;
     box-shadow: -4px 0 8px #0d477625;
+    display: flex;
+}
+
+.phone {
+    position: relative;
+    margin: auto;
+    width: 400px;
+    display: flex;
+}
+
+.phone img {
+    width: 100%;
+    position: absolute;
+}
+
+.app-header {
+    padding: 16px 12px;
+    background-color: #0D4676;
+    color: #fff;
+    font-size: 14px;
+    font-weight: 600;
+}
+
+.app-header.fix {
+    position: sticky;
+    top: 0;
+}
+
+.phone .screen {
+    position: relative;
+    margin: 58px auto 0;
+    width: 363px;
+    height: 732px;
+    border-radius: 0 0 30px 30px;
+    background-color: #f2f2f2;
+    overflow: auto;
 }
